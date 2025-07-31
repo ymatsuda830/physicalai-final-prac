@@ -1,0 +1,35 @@
+controller_manager:
+  ros__parameters:
+    update_rate: 100  # Hz
+
+    rupe_arm_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+    rupe_gripper_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+rupe_arm_controller:
+  ros__parameters:
+    joints:
+      - rupe_joint1
+      - rupe_joint2
+      - rupe_joint3
+      - rupe_joint4
+
+    command_interfaces:
+      - position
+
+    state_interfaces:
+      - position
+
+rupe_gripper_controller:
+  ros__parameters:
+    joints:
+      - rupe_joint_hand
+
+    command_interfaces:
+      - position
+
+    state_interfaces:
+      - position

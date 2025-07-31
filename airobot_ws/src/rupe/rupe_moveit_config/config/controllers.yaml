@@ -1,0 +1,20 @@
+controller_names:
+  - rupe_arm_controller
+  - rupe_gripper_controller
+
+rupe_arm_controller:
+  action_ns: follow_joint_trajectory
+  type: FollowJointTrajectory
+  default: true
+  joints:
+    - rupe_joint1
+    - rupe_joint2
+    - rupe_joint3
+    - rupe_joint4
+
+rupe_gripper_controller:
+  action_ns: follow_joint_trajectory
+  type: FollowJointTrajectory
+  default: true
+  joints:
+    - rupe_joint_hand

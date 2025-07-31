@@ -1,0 +1,79 @@
+# spawn_rupe.launch.py (最終確定版 Ver.7)
+import os
+import xacro
+from ament_index_python.packages import get_package_share_directory
+from launch import LaunchDescription
+from launch.actions import ExecuteProcess
+from launch_ros.actions import Node
+from launch_ros.actions import SetParameter
+
+def generate_launch_description():
+    pkg_rupe_description_share = get_package_share_directory('rupe_description')
+    pkg_rupe_gazebo_share = get_package_share_directory('rupe_gazebo')
+    
+    world_file = os.path.join(pkg_rupe_gazebo_share, 'worlds', 'table.sdf')
+    
+    model_path = os.path.dirname(pkg_rupe_description_share)
+    plugin_path = '/opt/ros/humble/lib'
+    
+    env = {}
+    if 'GAZEBO_MODEL_PATH' in os.environ:
+        env['GAZEBO_MODEL_PATH'] = os.environ['GAZEBO_MODEL_PATH'] + os.pathsep + model_path
+    else:
+        env['GAZEBO_MODEL_PATH'] = model_path
+        
+    if 'IGN_GAZEBO_SYSTEM_PLUGIN_PATH' in os.environ:
+        env['IGN_GAZEBO_SYSTEM_PLUGIN_PATH'] = os.environ['IGN_GAZEBO_SYSTEM_PLUGIN_PATH'] + os.pathsep + plugin_path
+    else:
+        env['IGN_GAZEBO_SYSTEM_PLUGIN_PATH'] = plugin_path
+
+
+    # ... env = {...} の直後に追加
+    print("="*50)
+    print(f"DEBUG: install_dir = {install_dir}")
+    print(f"DEBUG: plugin_path = {plugin_path}")
+    print(f"DEBUG: IGN_GAZEBO_SYSTEM_PLUGIN_PATH = {env.get('IGN_GAZEBO_SYSTEM_PLUGIN_PATH')}")
+    print("="*50)
+
+    ign_gazebo = ExecuteProcess(
+        cmd=['ign gazebo -r', world_file],
+        output='screen',
+        additional_env=env,
+        shell=True
+    )
+
+    # xacroファイルへのパス
+    sdf_xacro_file = os.path.join(pkg_rupe_description_share,'urdf', 'rupe.sdf.xacro')
+    
+    # xacroに渡すメッシュパスの引数を定義
+    mesh_path = pkg_rupe_description_share
+    
+    # xacroを実行してSDF文字列を生成
+    robot_description_config = xacro.process_file(
+        sdf_xacro_file,
+        mappings={'mesh_path': mesh_path}
+    )
+    sdf_string = robot_description_config.toxml()
+
+    spawn_entity = Node(
+        package='ros_gz_sim',
+        executable='create',
+        arguments=['-string', sdf_string,
+                   '-name', 'rupe',
+                   '-z', '1.015'],
+        output='screen'
+    )
+    
+    bridge = Node(
+        package='ros_gz_bridge',
+        executable='parameter_bridge',
+        arguments=['/clock@rosgraph_msgs/msg/Clock[ignition.msgs.Clock'],
+        output='screen'
+    )
+
+    return LaunchDescription([
+        SetParameter(name='use_sim_time', value=True),
+        ign_gazebo,
+        spawn_entity,
+        bridge,
+    ])

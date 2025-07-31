@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>rupe</name>
+  <version>2.0.1</version>
+  <description>ROS 2 package suite of Rupe</description>
+  <maintainer email="shop@rt-net.jp">RT Corporation</maintainer>
+  <license>Apache License 2.0</license>
+
+  <author email="s.aoki@rt-net.jp">Shota Aoki</author>
+  <author email="kuwagata@rt-net.jp">Atsushi Kuwagata</author>
+  <author email="yusuke.kato@rt-net.jp">Yusuke Kato</author>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <exec_depend>rupe_control</exec_depend>
+  <exec_depend>rupe_description</exec_depend>
+  <exec_depend>rupe_examples</exec_depend>
+  <exec_depend>rupe_gazebo</exec_depend>
+  <exec_depend>rupe_moveit_config</exec_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

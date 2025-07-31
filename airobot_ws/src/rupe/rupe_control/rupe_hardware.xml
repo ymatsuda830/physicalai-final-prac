@@ -1,0 +1,9 @@
+<library path="rupe_hardware">
+  <class name="rupe_hardware/RupeHardware"
+         type="rupe_control::RupeHardware"
+         base_class_type="hardware_interface::SystemInterface">
+    <description>
+      A RUPE hardware plugin for the ros2_control.
+    </description>
+  </class>
+</library>
